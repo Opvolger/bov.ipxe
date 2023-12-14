@@ -8,8 +8,8 @@ set ipxe_server_ip ${proxydhcp/dhcp-server}
 set linuxmintversion "21.2"
 set ipxe_http_port 8084
 
-console --x 1024 --y 768
-console --picture http://${ipxe_server_ip}:${ipxe_http_port}/images/splash.png
+#console --x 1024 --y 768
+#console --picture http://${ipxe_server_ip}:${ipxe_http_port}/images/splash.png
 
 set menu_timeout 30000
 set menu_default disk
@@ -20,7 +20,7 @@ menu iPXE boot menu for hostname: ${hostname} domain: ${domain} mac: ${net0/mac}
 item
 item --key o lmso         Linux Mint ${linuxmintversion} Cinnamon 64bit OEM Samba
 #item --key h lmho         Linux Mint ${linuxmintversion} Cinnamon 64bit OEM http
-item --key i lmi          Linux Mint ${linuxmintversion} Cinnamon 64bit OEM http iso
+item --key i lmio          Linux Mint ${linuxmintversion} Cinnamon 64bit OEM http iso
 item --key k lms          Linux Mint ${linuxmintversion} Cinnamon 64bit Samba
 #item --key j lmh          Linux Mint ${linuxmintversion} Cinnamon 64bit http
 item --key l lmi          Linux Mint ${linuxmintversion} Cinnamon 64bit http iso
@@ -61,6 +61,14 @@ goto ${selected}
 :lmho
   set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
   kernel ${http_location_boot}/vmlinuz boot=live noswap noeject oem-config/enable=true ip=dhcp fetch=${http_location_boot}/filesystem.squashfs
+  initrd ${http_location_boot}/initrd.lz
+  boot
+  goto exit
+
+:lmi0
+  set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
+  set http_location_iso http://${ipxe_server_ip}:${ipxe_http_port}/
+  kernel ${http_location_boot}/vmlinuz oem-config/enable=true url=${http_location_iso}/linuxmint-21.2-cinnamon-64bit.iso root=/dev/ram0 ramdisk_size=3000000 ip=dhcp
   initrd ${http_location_boot}/initrd.lz
   boot
   goto exit
