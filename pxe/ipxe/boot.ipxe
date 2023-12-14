@@ -19,10 +19,8 @@ menu iPXE boot menu for hostname: ${hostname} domain: ${domain} mac: ${net0/mac}
 
 item
 item --key o lmso         Linux Mint ${linuxmintversion} Cinnamon 64bit OEM Samba
-#item --key h lmho         Linux Mint ${linuxmintversion} Cinnamon 64bit OEM http
 item --key i lmio          Linux Mint ${linuxmintversion} Cinnamon 64bit OEM http iso
 item --key k lms          Linux Mint ${linuxmintversion} Cinnamon 64bit Samba
-#item --key j lmh          Linux Mint ${linuxmintversion} Cinnamon 64bit http
 item --key l lmi          Linux Mint ${linuxmintversion} Cinnamon 64bit http iso
 item --gap --             --------------------------------------------------------------------------
 item --key d disk         Boot local disk
@@ -58,13 +56,6 @@ goto ${selected}
   boot
   goto exit
 
-:lmho
-  set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
-  kernel ${http_location_boot}/vmlinuz boot=live noswap noeject oem-config/enable=true ip=dhcp fetch=${http_location_boot}/filesystem.squashfs
-  initrd ${http_location_boot}/initrd.lz
-  boot
-  goto exit
-
 :lmio
   set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
   set http_location_iso http://${ipxe_server_ip}:${ipxe_http_port}/
@@ -77,13 +68,6 @@ goto ${selected}
   set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
   set samba_location //${samba_hostname}/${samba_share}/linuxmint
   kernel ${http_location_boot}/vmlinuz showmounts root=/dev/cifs boot=casper netboot=cifs nfsroot=${samba_location} ip=dhcp ro
-  initrd ${http_location_boot}/initrd.lz
-  boot
-  goto exit
-
-:lmh
-  set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
-  kernel ${http_location_boot}/vmlinuz boot=live ip=dhcp fetch=${http_location_boot}/filesystem.squashfs
   initrd ${http_location_boot}/initrd.lz
   boot
   goto exit
