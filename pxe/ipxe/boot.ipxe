@@ -1,0 +1,117 @@
+#!ipxe
+
+# This file has been generated, you can adjust it via the corresponding repo
+
+dhcp
+set keep-san 1
+set ipxe_server_ip ${proxydhcp/dhcp-server}
+set linuxmintversion "21.2"
+set ipxe_http_port 8084
+
+console --x 1024 --y 768
+console --picture http://${ipxe_server_ip}:${ipxe_http_port}/images/splash.png
+
+set menu_timeout 30000
+set menu_default disk
+
+:start
+menu iPXE boot menu for hostname: ${hostname} domain: ${domain} mac: ${net0/mac} ip: ${net0/ip}
+
+item
+item --key o lmso         Linux Mint ${linuxmintversion} Cinnamon 64bit OEM Samba
+item --key h lmho         Linux Mint ${linuxmintversion} Cinnamon 64bit OEM http
+item --key k lms          Linux Mint ${linuxmintversion} Cinnamon 64bit Samba
+item --key j lmh          Linux Mint ${linuxmintversion} Cinnamon 64bit http
+item --key i lmi          Linux Mint ${linuxmintversion} Cinnamon 64bit http iso
+item --gap --             --------------------------------------------------------------------------
+item --key d disk         Boot local disk
+item --gap --             ------------------------- Advanced options -------------------------------
+item --key c config       Configure settings
+item --key t external     (T)  External Linux Installs http://boot.salstar.sk/
+item shell                Drop to iPXE shell
+item reboot               Reboot computer
+item
+item --key x exit         Exit iPXE and continue BIOS boot
+
+set samba_hostname   ${ipxe_server_ip}
+set samba_share      pxe
+
+choose --timeout ${menu_timeout} --default ${menu_default} selected || goto cancel
+
+goto ${selected}
+
+:disk
+  sanboot --no-describe --drive 0x80
+  boot
+  exit
+
+:external
+  chain http://boot.salstar.sk || goto failed
+  goto exit
+
+:lmso
+  set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
+  set samba_location //${samba_hostname}/${samba_share}/linuxmint
+  kernel ${http_location_boot}/vmlinuz oem-config/enable=true root=/dev/nfs showmounts root=/dev/cifs boot=casper netboot=cifs nfsroot=${samba_location} ip=dhcp ro
+  initrd ${http_location_boot}/initrd.lz
+  boot
+  goto exit
+
+:lmho
+  set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
+  kernel ${http_location_boot}/vmlinuz oem-config/enable=true ip=dhcp fetch=${http_location_boot}/filesystem.squashfs
+  initrd ${http_location_boot}/initrd.lz
+  boot
+  goto exit
+
+:lms
+  set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
+  set samba_location //${samba_hostname}/${samba_share}/linuxmint
+  kernel ${http_location_boot}/vmlinuz showmounts root=/dev/cifs boot=casper netboot=cifs nfsroot=${samba_location} ip=dhcp ro
+  initrd ${http_location_boot}/initrd.lz
+  boot
+  goto exit
+
+:lmh
+  set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
+  kernel ${http_location_boot}/vmlinuz boot=live ip=dhcp fetch=${http_location_boot}/filesystem.squashfs
+  initrd ${http_location_boot}/initrd.lz
+  boot
+  goto exit
+
+:lmi
+  set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
+  set http_location_iso http://${ipxe_server_ip}:${ipxe_http_port}/
+  kernel ${http_location_boot}/vmlinuz url=${http_location_iso}/linuxmint-21.2-cinnamon-64bit.iso root=/dev/ram0 ramdisk_size=3000000 ip=dhcp
+  initrd ${http_location_boot}/initrd.lz
+  boot
+  goto exit
+
+:cancel
+echo You cancelled the menu, dropping you to a shell
+
+:shell
+echo Type 'exit' to get the back to the menu
+shell
+set menu-timeout 0
+set submenu-timeout 0
+goto start
+
+:failed
+echo Booting failed, dropping to shell
+goto shell
+
+:reboot
+reboot
+
+:exit
+exit
+
+:config
+config
+goto start
+
+:back
+set submenu-timeout 0
+clear submenu-default
+goto start

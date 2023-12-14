@@ -1,0 +1,5 @@
+pxe/ipxe/ipxe.efi
+pxe/ipxe/undionly.kpxe
+pxe/ipxe/wimboot
+pxe/linuxmint/*
+*.iso

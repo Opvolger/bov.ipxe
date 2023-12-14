@@ -1,0 +1,13 @@
+---
+version: "2.1"
+services:
+  pxe:
+    image: opvolger/pxe:${DOCKER_PXE_TAG}
+    network_mode: host
+    container_name: pxe
+    environment:
+      DHCP_RANGE: "${DOCKER_ENV_DHCP_RANGE}"
+      PXE_IP_ADDRESS: "${DOCKER_ENV_PXE_IP_ADDRESS}"
+    volumes:
+        - ./pxe:/pxe
+    restart: unless-stopped
