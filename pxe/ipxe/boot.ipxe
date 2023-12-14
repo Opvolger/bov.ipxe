@@ -59,7 +59,7 @@ goto ${selected}
 
 :lmho
   set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
-  kernel ${http_location_boot}/vmlinuz oem-config/enable=true ip=dhcp fetch=${http_location_boot}/filesystem.squashfs
+  kernel ${http_location_boot}/vmlinuz boot=live noswap noeject oem-config/enable=true ip=dhcp fetch=${http_location_boot}/filesystem.squashfs
   initrd ${http_location_boot}/initrd.lz
   boot
   goto exit
