@@ -19,10 +19,11 @@ menu iPXE boot menu for hostname: ${hostname} domain: ${domain} mac: ${net0/mac}
 
 item
 item --key o lmso         Linux Mint ${linuxmintversion} Cinnamon 64bit OEM Samba
-item --key h lmho         Linux Mint ${linuxmintversion} Cinnamon 64bit OEM http
+#item --key h lmho         Linux Mint ${linuxmintversion} Cinnamon 64bit OEM http
+item --key i lmi          Linux Mint ${linuxmintversion} Cinnamon 64bit OEM http iso
 item --key k lms          Linux Mint ${linuxmintversion} Cinnamon 64bit Samba
-item --key j lmh          Linux Mint ${linuxmintversion} Cinnamon 64bit http
-item --key i lmi          Linux Mint ${linuxmintversion} Cinnamon 64bit http iso
+#item --key j lmh          Linux Mint ${linuxmintversion} Cinnamon 64bit http
+item --key l lmi          Linux Mint ${linuxmintversion} Cinnamon 64bit http iso
 item --gap --             --------------------------------------------------------------------------
 item --key d disk         Boot local disk
 item --gap --             ------------------------- Advanced options -------------------------------
