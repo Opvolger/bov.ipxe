@@ -65,7 +65,7 @@ goto ${selected}
   boot
   goto exit
 
-:lmi0
+:lmio
   set http_location_boot http://${ipxe_server_ip}:${ipxe_http_port}/linuxmint/casper
   set http_location_iso http://${ipxe_server_ip}:${ipxe_http_port}/
   kernel ${http_location_boot}/vmlinuz oem-config/enable=true url=${http_location_iso}/linuxmint-21.2-cinnamon-64bit.iso root=/dev/ram0 ramdisk_size=3000000 ip=dhcp
