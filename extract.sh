@@ -16,8 +16,17 @@ fi
 
 mkdir -p $basedir/pxe/linuxmint
 mkdir -p $basedir/pxe/ipxe
-rm $basedir/pxe/linuxmint -rf
-7z x $filename -o$basedir/pxe/linuxmint
-chmod -R u=rwx,go=rx $basedir/pxe/linuxmint
-cp $filename $basedir/pxe/$filename
+
+if [[ ! -f "$basedir/pxe/linuxmint/.disk/info" ]] || ! grep -q $version "$basedir/pxe/linuxmint/.disk/info"; then
+    rm $basedir/pxe/linuxmint -rf
+    7z x $filename -o$basedir/pxe/linuxmint
+    chmod -R u=rwx,go=rx $basedir/pxe/linuxmint
+fi
+
+if [[ -f "$basedir/pxe/$filename" ]]; then
+    echo "$basedir/pxe/$filename exists."
+else
+    echo "cp $filename."
+    cp $filename $basedir/pxe/$filename
+fi
 sed -i "s/linuxmintversion \"[0-9.]*/linuxmintversion \"$version/g" $(pwd)/pxe/ipxe/boot.ipxe
